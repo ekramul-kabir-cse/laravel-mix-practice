@@ -23,7 +23,10 @@ Route::delete('/delete-selected', 'DeleteController@deleteSelected')->name('dele
 
 Route::get('dependent/index', [DependentController::class, 'index'])->name('dependent.index');
 Route::post('/store',[DependentController::class, 'store'])->name('dependent.store');
-// Route::post('/get-data',[DependentController::class, 'getData']);
-// Route::get('/get-users', 'UserController@getUsers')->name('get-users');
 Route::get('/get-users', [DependentController::class, 'getUsers'])->name('get-users');
+
+//import export
+Route::get('/file-import',[DependentController::class,'importView'])->name('import-view');
+Route::post('/import',[DependentController::class,'import'])->name('import');
+Route::get('/export',[DependentController::class,'export'])->name('export');
 

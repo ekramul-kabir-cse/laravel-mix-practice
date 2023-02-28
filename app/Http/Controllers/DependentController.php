@@ -3,8 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dependent;
+use App\Exports\ExportUser;
+use App\Imports\ImportUser;
+use App\Models\ImportExport;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use App\Exports\DependentExport;
+
+use App\Imports\DependentImport;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -20,7 +28,7 @@ class DependentController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email|max:255',
             'phone' => 'required|string|max:20',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image|max:8192',
             'address' => 'required|string|max:255',
             'dob' => 'required|date',
         ]);
@@ -50,4 +58,21 @@ class DependentController extends Controller
         $users = Dependent::all();
         return response()->json(['users' => $users]);
     }
+
+    public function importView()
+    {
+        return view('excel_all.excel_view');
+    }
+    public function import() 
+    {
+        Excel::import(new DependentImport,request()->file('import_file'));
+        return back();
+    }
+
+    public function export() 
+    {
+        return Excel::download(new DependentExport, 'dependent.xlsx');
+    }
+
+   
 }
