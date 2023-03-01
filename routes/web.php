@@ -2,7 +2,9 @@
 
 use App\Models\Dependent;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\DependentController;
+use App\Http\Controllers\InfoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,4 +31,16 @@ Route::get('/get-users', [DependentController::class, 'getUsers'])->name('get-us
 Route::get('/file-import',[DependentController::class,'importView'])->name('import-view');
 Route::post('/import',[DependentController::class,'import'])->name('import');
 Route::get('/export',[DependentController::class,'export'])->name('export');
+
+//invoice generator
+Route::get('/invoice/{id}', [InvoiceController::class, 'generateInvoice'])->name('invoice');
+
+
+
+//crud with many field
+Route::get('/info/create',[InfoController::class,'create'])->name('info.create');
+Route::post('/store', [InfoController::class, 'store'])->name('info.store');
+Route::get('/info/index',[InfoController::class,'index'])->name('info.index');
+
+
 

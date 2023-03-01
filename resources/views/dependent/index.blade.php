@@ -1,5 +1,5 @@
 
-@include('layouts.footer')
+@include('layouts.header')
     <div class="container">
 <br><br><br>
         <div id="success-message" class="text-primary"></div>
@@ -76,4 +76,4 @@
 
 
 
-@include('layouts.header')
+@include('layouts.footer')

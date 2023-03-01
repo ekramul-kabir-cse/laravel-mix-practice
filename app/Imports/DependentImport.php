@@ -15,16 +15,25 @@ class DependentImport implements ToModel,WithHeadingRow
     */
     public function model(array $row)
     {
-        // $dob = Carbon::createFromFormat('d/m/Y', $row['dob'])->format('Y-m-d');
-        // Convert '04/12/2023' to '2023-12-04'
-        return new Dependent([
-            'name'     => $row['name'],
-            'email'    => $row['email'],
-            'phone'    => $row['phone'],
-            'image'    => $row['image'],
-            'address'  => $row['address'],
-            'dob' => Carbon::createFromFormat('d/m/Y', $row['dob'])->format('Y-m-d'),
-            
-        ]);
+        $date = $row['dob'];
+        $dateObj = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($date);
+        $dateFormatted = $dateObj->format('Y-m-d');
+        // return new Dependent([
+        //     'name'         => $row['name'],
+        //     'email'        => $row['email'],
+        //     'phone'        => $row['phone'],
+        //     'image'        => $row['image'],
+        //     'address'      => $row['address'],
+        //     'dob'          => $dateFormatted,
+        // ]);
+        Dependent::updateOrInsert([
+            'email' => $row['email'] //update where get same email
+        ], [
+            'name'    => $row['name'],
+            'phone'   => $row['phone'],
+            'image'   => $row['image'],
+            'address' => $row['address'],
+            'dob'     => $dateFormatted,
+        ]);  
     }
 }
