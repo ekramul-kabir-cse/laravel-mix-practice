@@ -1,6 +1,8 @@
+
 @include('layouts.header')
+<br>
 <div class="container">
-    <h2>Table</h2>
+  <a href="{{ route('info.create') }}" class="btn btn-danger">Add New</a>
     <table class="table table-striped">
       <thead>
         <tr>
@@ -33,8 +35,14 @@
          <td><img src="{{ asset('images/'.$infos->image) }}" style="height: 100px; width:100px;"></td>
          <td>{{ $infos->address }}</td>
          <td>
-            <a href="#" class="btn btn-primary">Edit</a>
-            <a href="#" class="btn btn-danger">Delete</a>
+            <a href="{{ route('info.edit',$infos->id) }}" class="btn btn-primary">Edit</a>
+            {{-- <button href="{{ route('info.delete',$infos->id) }}" class="btn btn-danger show_confirm">Delete</button> --}}
+            <form action="{{ route('info.delete', $infos->id) }}" method="POST">
+              @csrf
+              @method('POST')
+              <!-- Add a "Delete" button with onclick event -->
+              <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this record?')">Delete</button>
+          </form>          
          </td>
 
         </tr>

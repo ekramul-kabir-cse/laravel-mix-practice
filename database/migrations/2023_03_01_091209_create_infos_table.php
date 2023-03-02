@@ -18,7 +18,7 @@ class CreateInfosTable extends Migration
             $table->string('title');
             $table->string('subtitle');
             $table->text('description');
-            $table->string('slug')->unique();
+            $table->string('slug');
             $table->date('date');
             $table->string('name');
             $table->string('email')->unique();

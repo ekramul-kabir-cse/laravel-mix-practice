@@ -23,8 +23,10 @@ Route::get('/', function () {
 
 Route::delete('/delete-selected', 'DeleteController@deleteSelected')->name('delete-selected');
 
+
+//ajax with just store and show not dependent dropdown
 Route::get('dependent/index', [DependentController::class, 'index'])->name('dependent.index');
-Route::post('/store',[DependentController::class, 'store'])->name('dependent.store');
+Route::post('/store/user',[DependentController::class, 'store'])->name('store.user');
 Route::get('/get-users', [DependentController::class, 'getUsers'])->name('get-users');
 
 //import export
@@ -41,6 +43,9 @@ Route::get('/invoice/{id}', [InvoiceController::class, 'generateInvoice'])->name
 Route::get('/info/create',[InfoController::class,'create'])->name('info.create');
 Route::post('/store', [InfoController::class, 'store'])->name('info.store');
 Route::get('/info/index',[InfoController::class,'index'])->name('info.index');
+Route::get('/info/edit/{id}',[InfoController::class,'editInfo'])->name('info.edit');
+Route::post('/info/update/{id}',[InfoController::class,'updateInfo'])->name('info.update');
+Route::post('/info/delete/{id}',[InfoController::class,'delete'])->name('info.delete');
 
 
 

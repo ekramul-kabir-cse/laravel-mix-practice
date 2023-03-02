@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Info;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class InfoController extends Controller
 {
@@ -41,7 +42,7 @@ class InfoController extends Controller
             'image.max' => 'The image may not be larger than 2MB.',
             'address.required' => 'The address field is required.',
         ]);
-        
+
 
         // Generate slug from title
         $slug = Str::slug($request->input('title'), '-');
@@ -52,9 +53,9 @@ class InfoController extends Controller
         // Handle image upload
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time().'.'.$image->extension();
+            $imageName = time() . '.' . $image->extension();
             $image->move(public_path('images'), $imageName);
-        }        
+        }
         // Save data to database
         $info = new Info();
         $info->title = $request->input('title');
@@ -68,15 +69,75 @@ class InfoController extends Controller
         $info->image = $imageName;
         $info->address = $request->input('address');
         $info->save();
-
-        // Set success message and redirect to homepage
-        return redirect()->back()->with('success', 'Data has been saved successfully.');
+        return redirect()->route('info.index')->with('alert', [
+            'type' => 'success',
+            'message' => 'Data has been saved successfully',
+        ]);
     }
 
     public function index()
     {
-        $info = Info::orderBY('id','DESC')->get();
-        return view('info.index',compact('info'));
+        $info = Info::orderBY('id', 'DESC')->get();
+        return view('info.index', compact('info'));
+    }
+    public function editInfo($id)
+    {
+        $info = Info::where('id', $id)->first();
+        return view('info.edit', compact('info'));
+    }
+
+    public function updateInfo(Request $request, $id)
+    {
+        $info = Info::findOrFail($id);
+        $data = $request->validate([
+            'title' => 'required|string',
+            'subtitle' => 'nullable|string',
+            'description' => 'nullable|string',
+            'date' => 'nullable|date',
+            'name' => 'nullable|string',
+            'email' => 'nullable|email',
+            'phone' => 'nullable|string',
+            'address' => 'nullable|string',
+        ]);
+
+        // Update slug if title is changed
+        if ($request->filled('title') && $request->input('title') !== $info->title) {
+            $slug = Str::slug($request->input('title'), '-');
+            if (Info::where('slug', $slug)->exists()) {
+                return redirect()->back()->withInput()->with('alert', ['type' => 'warning', 'message' => 'Slug already taken']);
+            }
+            $data['slug'] = $slug;
+        } else {
+            $data['slug'] = $info->slug;
+        }
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->extension();
+            $image->move(public_path('images'), $imageName);
+            // Delete old image if it exists
+            if ($info->image) {
+                Storage::delete('public/images/' . $info->image);
+            }
+            $data['image'] = $imageName;
+        }
+
+        $info->update($data);
+        return redirect()->route('info.index')->with('alert', ['type' => 'success', 'message' => 'Data has been updated successfully']);
+    }
+
+
+    public function delete($id)
+    {
+        $info = Info::findOrFail($id);
+
+        // Delete image file from storage
+        if ($info->image) {
+            Storage::delete('public/images/' . $info->image);
+        }
+        // Delete record from database
+        $info->delete();
+        return redirect()->route('info.index')->with('alert', ['type' => 'success', 'message' => 'Data has been deleted successfully']);
     }
 }
-

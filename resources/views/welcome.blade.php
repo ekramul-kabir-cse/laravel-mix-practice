@@ -21,6 +21,11 @@
             <a href="{{ route('invoice') }}" class="btn btn-primary btn-lg btn-block">Generate Invoice</a>
         </div>
     </div> --}}
+    <div class="row">
+        <div class="col">
+            <a href="{{ route('info.index') }}" class="btn btn-primary btn-lg btn-block">Info</a>
+        </div>
+    </div>
 </div>
 
 

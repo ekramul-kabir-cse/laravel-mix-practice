@@ -4,8 +4,9 @@
 <br><br><br>
         <div id="success-message" class="text-primary"></div>
         <div id="error-message" class="text-primary"></div>
-        <form method="POST" action="{{ route('dependent.store') }}" enctype="multipart/form-data" id="my-form">
+        <form action="{{ URL::to('/store/user') }}" method="POST" enctype="multipart/form-data" id="my-form">
             @csrf
+            @method('POST')
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
@@ -73,7 +74,6 @@
             </div>
         </div>
     </div>
-
 
 
 @include('layouts.footer')
